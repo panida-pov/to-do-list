@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  to-do-db:
+    image: mysql:8.0
+    container_name: to-do-db
+    ports:
+      - "23306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=todo
+  to-do-server:
+    image: to-do-server
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    container_name: to-do-server
+    depends_on:
+      - to-do-db
+    ports:
+      - "20080:3000"
+    volumes:
+      - ./server:/server
+    environment:
+      - timezone=Asia/Tokyo
