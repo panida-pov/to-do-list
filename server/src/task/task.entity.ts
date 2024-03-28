@@ -12,7 +12,7 @@ export class TaskEntity {
   status: number;
 
   @Column()
-  due_date: string;
+  due_date: Date;
 
   @Column()
   category_id: number;
