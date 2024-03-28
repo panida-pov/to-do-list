@@ -1,28 +1,57 @@
-import { Controller, Get, Post, Put, Body, Param, Delete} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  Param,
+  Delete,
+  ParseIntPipe,
+  UsePipes,
+  ValidationPipe,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { TaskService } from './task.service';
-import { TaskEntity } from './task.entity';
-
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  async getTask(): Promise<TaskEntity[]> {
+  async findAll() {
     return await this.taskService.findAll();
   }
 
-  @Post()
-  async createTask(@Body() newTask: TaskEntity): Promise<TaskEntity> {
-    return await this.taskService.create(newTask);
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const task = await this.taskService.findOne(id);
+    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    return task;
   }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() updateTask: TaskEntity): Promise<TaskEntity> {
-    return await this.taskService.update(id, updateTask);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Post()
+  async create(@Body() createTaskDto: CreateTaskDto) {
+    return await this.taskService.create(createTaskDto);
+  }
+
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ) {
+    const task = await this.taskService.findOne(id);
+    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    return await this.taskService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
-  async deleteTask(@Param('id') id: number) {
-    return await this.taskService.delete(id);
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    const task = await this.taskService.findOne(id);
+    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    await this.taskService.delete(id);
   }
 }
