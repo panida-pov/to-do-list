@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { TaskEntity } from './task.entity';
+import { CreateTaskParams, UpdateTaskParams } from './task.interface';
 
 @Injectable()
 export class TaskService {
@@ -10,21 +11,27 @@ export class TaskService {
     private readonly tasksRepository: Repository<TaskEntity>,
   ) {}
 
-  async findAll(): Promise<TaskEntity[]> {
+  async findAll() {
     return this.tasksRepository.find();
   }
 
-  async create(newTask: TaskEntity): Promise<TaskEntity> {
-    return await this.tasksRepository.save(newTask);
+  async findOne(id: number) {
+    return await this.tasksRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateTask: TaskEntity): Promise<TaskEntity> {
-    let toUpdate = await this.tasksRepository.findOneBy({ id: id });
-    let updated = Object.assign(toUpdate, updateTask);
-    return await this.tasksRepository.save(updated);
+  async create(createTaskParams: CreateTaskParams) {
+    return await this.tasksRepository.save(createTaskParams);
   }
- 
-  async delete(id: number): Promise<DeleteResult> {
-    return await this.tasksRepository.delete({ id: id });
+
+  async update(id: number, updateTaskParams: UpdateTaskParams) {
+    const existing = await this.findOne(id);
+    return await this.tasksRepository.save({
+      ...existing,
+      ...updateTaskParams,
+    });
+  }
+
+  async delete(id: number) {
+    return await this.tasksRepository.delete({ id });
   }
 }
