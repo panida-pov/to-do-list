@@ -12,7 +12,7 @@ export class TaskService {
   ) {}
 
   async findAll() {
-    return this.tasksRepository.find();
+    return this.tasksRepository.find({ relations: ['category'] });
   }
 
   async findOne(id: number) {
