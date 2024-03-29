@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { CategoryEntity } from '../category/category.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity('tasks')
 export class TaskEntity {
@@ -19,4 +26,8 @@ export class TaskEntity {
 
   @Column()
   priority: number;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.tasks)
+  @JoinColumn({ name: 'category_id' })
+  category: CategoryEntity;
 }
