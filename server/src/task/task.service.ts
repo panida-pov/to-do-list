@@ -1,8 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { TaskEntity } from './task.entity';
+import { CreateTaskParams, UpdateTaskParams } from './task.interface';
 
 @Injectable()
 export class TaskService {
-  getTask(): string {
-    return 'This is your task!';
+  constructor(
+    @InjectRepository(TaskEntity)
+    private readonly tasksRepository: Repository<TaskEntity>,
+  ) {}
+
+  async findAll() {
+    return this.tasksRepository.find();
+  }
+
+  async findOne(id: number) {
+    return await this.tasksRepository.findOneBy({ id });
+  }
+
+  async create(createTaskParams: CreateTaskParams) {
+    return await this.tasksRepository.save(createTaskParams);
+  }
+
+  async update(id: number, updateTaskParams: UpdateTaskParams) {
+    const existing = await this.findOne(id);
+    return await this.tasksRepository.save({
+      ...existing,
+      ...updateTaskParams,
+    });
+  }
+
+  async delete(id: number) {
+    return await this.tasksRepository.delete({ id });
   }
 }
