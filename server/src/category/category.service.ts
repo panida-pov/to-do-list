@@ -15,7 +15,7 @@ export class CategoryService {
   ) {}
 
   async findAll() {
-    return this.categoryRepository.find({ relations: ['tasks'] });
+    return this.categoryRepository.find();
   }
 
   async findOne(id: number) {
