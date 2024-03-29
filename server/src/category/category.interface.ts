@@ -3,5 +3,5 @@ export interface CreateCategoryParams {
 }
 
 export interface UpdateCategoryParams {
-  name?: string;
+  name: string;
 }

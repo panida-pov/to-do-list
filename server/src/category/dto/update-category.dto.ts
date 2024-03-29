@@ -1,8 +1,7 @@
-import { IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateCategoryDto {
   @IsString()
   @IsNotEmpty()
-  @ValidateIf((object, value) => value !== undefined)
-  name?: string;
+  name: string;
 }
