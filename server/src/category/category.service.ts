@@ -18,8 +18,12 @@ export class CategoryService {
     return this.categoryRepository.find();
   }
 
-  async findOne(id: number) {
+  async findOneById(id: number) {
     return await this.categoryRepository.findOneBy({ id });
+  }
+
+  async findAllByName(name: string) {
+    return await this.categoryRepository.findBy({ name });
   }
 
   async create(createCategoryParams: CreateCategoryParams) {
@@ -27,7 +31,7 @@ export class CategoryService {
   }
 
   async update(id: number, updateCategoryParams: UpdateCategoryParams) {
-    const existing = await this.findOne(id);
+    const existing = await this.findOneById(id);
     return await this.categoryRepository.save({
       ...existing,
       ...updateCategoryParams,

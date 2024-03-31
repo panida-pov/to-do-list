@@ -15,6 +15,7 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { QueryFailedError } from 'typeorm';
 
 @Controller('categories')
 export class CategoryController {
@@ -28,7 +29,13 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return await this.categoryService.create(createCategoryDto);
+    try {
+      return await this.categoryService.create(createCategoryDto);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -37,16 +44,19 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    const category = await this.categoryService.findOne(id);
-    if (!category)
-      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
-    return this.categoryService.update(id, updateCategoryDto);
+    try {
+      return await this.categoryService.update(id, updateCategoryDto);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const category = await this.categoryService.findOne(id);
-    if (!category)
+    const entity = await this.categoryService.findOneById(id);
+    if (!entity)
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     await this.categoryService.delete(id);
   }
