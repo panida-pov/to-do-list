@@ -28,10 +28,10 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    const entity = await this.categoryService.findByName(
+    const entities = await this.categoryService.findAllByName(
       createCategoryDto.name,
     );
-    if (entity)
+    if (entities.length)
       throw new HttpException(
         'Category with same name already exists',
         HttpStatus.CONFLICT,
@@ -45,16 +45,16 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    const category = await this.categoryService.findOne(id);
-    if (!category)
+    const entity = await this.categoryService.findOneById(id);
+    if (!entity)
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const category = await this.categoryService.findOne(id);
-    if (!category)
+    const entity = await this.categoryService.findOneById(id);
+    if (!entity)
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     await this.categoryService.delete(id);
   }
