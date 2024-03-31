@@ -3,9 +3,9 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 export const dbDataSource: DataSourceOptions = {
   type: 'mysql',
   // For Docker, use `to-do-db`
-  host: 'localhost',
+  host: 'to-do-db',
   // For Docker, use `3306`
-  port: 23306,
+  port: 3306,
   username: 'root',
   password: 'root',
   database: 'todo',

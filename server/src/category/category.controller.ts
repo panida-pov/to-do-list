@@ -33,7 +33,6 @@ export class CategoryController {
       return await this.categoryService.create(createCategoryDto);
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        console.log(error);
         throw new HttpException(error.message, HttpStatus.CONFLICT);
       }
     }
@@ -49,7 +48,6 @@ export class CategoryController {
       return await this.categoryService.update(id, updateCategoryDto);
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        console.log(error);
         throw new HttpException(error.message, HttpStatus.CONFLICT);
       }
     }
