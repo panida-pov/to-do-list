@@ -28,6 +28,14 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
+    const entity = await this.categoryService.findByName(
+      createCategoryDto.name,
+    );
+    if (entity)
+      throw new HttpException(
+        'Category with same name already exists',
+        HttpStatus.CONFLICT,
+      );
     return await this.categoryService.create(createCategoryDto);
   }
 
