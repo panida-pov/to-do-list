@@ -15,6 +15,7 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { QueryFailedError } from 'typeorm';
 
 @Controller('categories')
 export class CategoryController {
@@ -28,15 +29,14 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    const entities = await this.categoryService.findAllByName(
-      createCategoryDto.name,
-    );
-    if (entities.length)
-      throw new HttpException(
-        'Category with same name already exists',
-        HttpStatus.CONFLICT,
-      );
-    return await this.categoryService.create(createCategoryDto);
+    try {
+      return await this.categoryService.create(createCategoryDto);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        console.log(error);
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -45,10 +45,14 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    const entity = await this.categoryService.findOneById(id);
-    if (!entity)
-      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
-    return this.categoryService.update(id, updateCategoryDto);
+    try {
+      return await this.categoryService.update(id, updateCategoryDto);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        console.log(error);
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   @Delete(':id')
