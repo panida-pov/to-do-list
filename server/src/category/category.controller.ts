@@ -13,8 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryDto } from './dto/category.dto';
 import { QueryFailedError } from 'typeorm';
 
 @Controller('categories')
@@ -28,9 +27,9 @@ export class CategoryController {
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
+  async create(@Body() categoryDto: CategoryDto) {
     try {
-      return await this.categoryService.create(createCategoryDto);
+      return await this.categoryService.create(categoryDto);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         throw new HttpException(error.message, HttpStatus.CONFLICT);
@@ -42,10 +41,10 @@ export class CategoryController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body() categoryDto: CategoryDto,
   ) {
     try {
-      return await this.categoryService.update(id, updateCategoryDto);
+      return await this.categoryService.update(id, categoryDto);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         throw new HttpException(error.message, HttpStatus.CONFLICT);

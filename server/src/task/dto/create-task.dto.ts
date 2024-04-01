@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateTaskDto {
@@ -12,15 +13,18 @@ export class CreateTaskDto {
   name: string;
 
   @IsNumber()
-  status: number = 0;
+  @ValidateIf((object, value) => value !== undefined)
+  status?: number;
 
   @IsDateString()
   @IsOptional()
-  due_date: Date;
+  due_date?: Date;
 
   @IsNumber()
-  category_id: number;
+  @IsOptional()
+  category_id?: number;
 
   @IsNumber()
-  priority: number = 1;
+  @ValidateIf((object, value) => value !== undefined)
+  priority?: number;
 }

@@ -2,6 +2,7 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateIf,
 } from 'class-validator';
@@ -17,11 +18,11 @@ export class UpdateTaskDto {
   status?: number;
 
   @IsDateString()
-  @ValidateIf((object, value) => value !== undefined)
+  @IsOptional()
   due_date?: Date;
 
   @IsNumber()
-  @ValidateIf((object, value) => value !== undefined)
+  @IsOptional()
   category_id?: number;
 
   @IsNumber()
