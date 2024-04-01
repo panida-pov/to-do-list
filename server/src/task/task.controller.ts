@@ -9,8 +9,6 @@ import {
   ParseIntPipe,
   UsePipes,
   ValidationPipe,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -26,9 +24,7 @@ export class TaskController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const task = await this.taskService.findOne(id);
-    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
-    return task;
+    return this.taskService.findOne(id);
   }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -43,15 +39,11 @@ export class TaskController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
-    const task = await this.taskService.findOne(id);
-    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
     return await this.taskService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const task = await this.taskService.findOne(id);
-    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
     await this.taskService.delete(id);
   }
 }
