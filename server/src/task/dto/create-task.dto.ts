@@ -4,6 +4,8 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
   ValidateIf,
 } from 'class-validator';
 
@@ -25,6 +27,8 @@ export class CreateTaskDto {
   category_id?: number;
 
   @IsNumber()
+  @Min(1)
+  @Max(3)
   @ValidateIf((object, value) => value !== undefined)
-  priority?: number;
+  priority?: number; // 1:LOW, 2:MEDIUM, 3:HIGH
 }

@@ -15,16 +15,16 @@ export class TaskEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ default: 0 })
   status: number;
 
-  @Column()
+  @Column({ default: null })
   due_date: Date;
 
-  @Column()
+  @Column({ default: null })
   category_id: number;
 
-  @Column()
+  @Column({ default: 1 })
   priority: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.tasks)

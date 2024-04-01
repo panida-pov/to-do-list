@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskEntity } from './task.entity';
@@ -17,7 +17,10 @@ export class TaskService {
   }
 
   async findOne(id: number) {
-    return await this.tasksRepository.findOneBy({ id });
+    const entity = await this.tasksRepository.findOneBy({ id });
+    if (!entity)
+      throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    return entity;
   }
 
   async create(createTaskDto: CreateTaskDto) {
@@ -25,14 +28,21 @@ export class TaskService {
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
-    const existing = await this.findOne(id);
+    if (!Object.keys(updateTaskDto).length)
+      throw new HttpException(
+        'Request body cannot be empty',
+        HttpStatus.BAD_REQUEST,
+      );
+    const entity = await this.findOne(id);
     return await this.tasksRepository.save({
-      ...existing,
+      ...entity,
       ...updateTaskDto,
     });
   }
 
   async delete(id: number) {
-    return await this.tasksRepository.delete({ id });
+    const { affected } = await this.tasksRepository.delete({ id });
+    if (!affected)
+      throw new HttpException('No task to remove', HttpStatus.NOT_FOUND);
   }
 }
