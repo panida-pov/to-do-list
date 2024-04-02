@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -14,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryDto } from './dto/category.dto';
-import { QueryFailedError } from 'typeorm';
 
 @Controller('categories')
 export class CategoryController {
@@ -28,13 +25,7 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
   async create(@Body() categoryDto: CategoryDto) {
-    try {
-      return await this.categoryService.create(categoryDto);
-    } catch (error) {
-      if (error instanceof QueryFailedError) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-    }
+    return await this.categoryService.create(categoryDto);
   }
 
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -43,20 +34,11 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() categoryDto: CategoryDto,
   ) {
-    try {
-      return await this.categoryService.update(id, categoryDto);
-    } catch (error) {
-      if (error instanceof QueryFailedError) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-    }
+    return await this.categoryService.update(id, categoryDto);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const entity = await this.categoryService.findOneById(id);
-    if (!entity)
-      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     await this.categoryService.delete(id);
   }
 }

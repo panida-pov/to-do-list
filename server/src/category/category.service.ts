@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { CategoryDto } from './dto/category.dto';
 
 @Injectable()
@@ -15,27 +15,37 @@ export class CategoryService {
     return this.categoryRepository.find();
   }
 
-  async findOneById(id: number) {
-    return await this.categoryRepository.findOneBy({ id });
-  }
-
-  async findAllByName(name: string) {
-    return await this.categoryRepository.findBy({ name });
-  }
-
   async create(categoryDto: CategoryDto) {
-    return await this.categoryRepository.save(categoryDto);
+    try {
+      return await this.categoryRepository.save(categoryDto);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   async update(id: number, categoryDto: CategoryDto) {
-    const existing = await this.findOneById(id);
-    return await this.categoryRepository.save({
-      ...existing,
-      ...categoryDto,
-    });
+    const entity = await this.categoryRepository.findOneBy({ id });
+    if (!entity) {
+      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      return await this.categoryRepository.save({
+        ...entity,
+        ...categoryDto,
+      });
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   async delete(id: number) {
-    return await this.categoryRepository.delete({ id });
+    const { affected } = await this.categoryRepository.delete({ id });
+    if (!affected)
+      throw new HttpException('No category to remove', HttpStatus.NOT_FOUND);
   }
 }
