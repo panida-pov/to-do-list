@@ -16,3 +16,8 @@ It is built with NestJS, TypeORM, and MySQL.
 #### /categories/:id
 * `PATCH` : Update a category
 * `DELETE` : Delete a category
+
+# Contributors
+<a href="https://github.com/panida-pov/to-do-list/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=panida-pov/to-do-list" />
+</a>
