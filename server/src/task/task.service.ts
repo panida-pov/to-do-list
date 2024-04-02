@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { TaskEntity } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -24,7 +24,13 @@ export class TaskService {
   }
 
   async create(createTaskDto: CreateTaskDto) {
-    return await this.tasksRepository.save(createTaskDto);
+    try {
+      return await this.tasksRepository.save(createTaskDto);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
@@ -33,11 +39,19 @@ export class TaskService {
         'Request body cannot be empty',
         HttpStatus.BAD_REQUEST,
       );
+
     const entity = await this.findOne(id);
-    return await this.tasksRepository.save({
-      ...entity,
-      ...updateTaskDto,
-    });
+
+    try {
+      return await this.tasksRepository.save({
+        ...entity,
+        ...updateTaskDto,
+      });
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+    }
   }
 
   async delete(id: number) {
