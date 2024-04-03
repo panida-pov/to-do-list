@@ -16,7 +16,7 @@ export const dbDataSource: DataSourceOptions = {
   migrations: [__dirname + '/migration/*.ts'],
   migrationsTableName: 'migration',
   synchronize: false,
-  timezone: '+00:00',
+  timezone: '+09:00',
 };
 
 const dataSource = new DataSource(dbDataSource);
