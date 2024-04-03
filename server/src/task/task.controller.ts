@@ -13,6 +13,7 @@ import {
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { DateTransformPipe } from './pipes/date-transform.pipe';
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
@@ -27,7 +28,7 @@ export class TaskController {
     return this.taskService.findOne(id);
   }
 
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UsePipes(new ValidationPipe({ whitelist: true }), new DateTransformPipe())
   @Post()
   async create(@Body() createTaskDto: CreateTaskDto) {
     return await this.taskService.create(createTaskDto);
