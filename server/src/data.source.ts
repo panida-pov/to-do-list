@@ -3,9 +3,11 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 export const dbDataSource: DataSourceOptions = {
   type: 'mysql',
   // For Docker, use `to-do-db`
-  host: 'to-do-db',
+  // For local, use `localhost`
+  host: 'localhost',
   // For Docker, use `3306`
-  port: 3306,
+  // For local, use `23306`
+  port: 23306,
   username: 'root',
   password: 'root',
   database: 'todo',
@@ -14,6 +16,7 @@ export const dbDataSource: DataSourceOptions = {
   migrations: [__dirname + '/migration/*.ts'],
   migrationsTableName: 'migration',
   synchronize: false,
+  timezone: '+00:00',
 };
 
 const dataSource = new DataSource(dbDataSource);
