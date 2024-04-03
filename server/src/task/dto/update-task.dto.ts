@@ -17,9 +17,9 @@ export class UpdateTaskDto {
   @ValidateIf((object, value) => value !== undefined)
   status?: number;
 
-  @IsDateString()
+  @IsDateString({ strict: true })
   @IsOptional()
-  due_date?: Date;
+  due_date?: string;
 
   @IsNumber()
   @IsOptional()
