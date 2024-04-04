@@ -28,9 +28,9 @@ export class TaskController {
     return this.taskService.findOne(id);
   }
 
-  @UsePipes(new ValidationPipe({ whitelist: true }), new DateTransformPipe())
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post()
-  async create(@Body() createTaskDto: CreateTaskDto) {
+  async create(@Body(DateTransformPipe) createTaskDto: CreateTaskDto) {
     return await this.taskService.create(createTaskDto);
   }
 
@@ -38,7 +38,7 @@ export class TaskController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTaskDto: UpdateTaskDto,
+    @Body(DateTransformPipe) updateTaskDto: UpdateTaskDto,
   ) {
     return await this.taskService.update(id, updateTaskDto);
   }

@@ -1,11 +1,26 @@
-import { Injectable, PipeTransform } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  PipeTransform,
+  Scope,
+} from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
+import * as moment from 'moment-timezone';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class DateTransformPipe implements PipeTransform {
+  constructor(@Inject(REQUEST) protected readonly request: Request) {}
+
   transform(value: CreateTaskDto | UpdateTaskDto) {
     if (!value.due_date) return value;
+
+    const timezone: string =
+      (this.request.headers.timezone as string) ?? 'Asia/Tokyo';
 
     const [date, time]: string[] = value.due_date.split(/T| /);
     const [
@@ -18,9 +33,17 @@ export class DateTransformPipe implements PipeTransform {
       ? time.split(':')
       : ['23', '59', '59'];
 
-    return {
-      ...value,
-      due_date: new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`),
-    };
+    try {
+      const timeMoment = moment
+        .tz(`${year}-${month}-${day} ${hour}:${minute}:${second}`, timezone)
+        .toDate();
+
+      return {
+        ...value,
+        due_date: timeMoment,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 }
