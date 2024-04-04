@@ -28,6 +28,6 @@ export class CustomUtcDateValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'Invalid UTC date format';
+    return "Invalid UTC date format. Expecting the following formats: ['YYYY-MM-DDThh:mm:ss.sssZ', 'YYYY-MM-DDThh:mm:ssZ']";
   }
 }
