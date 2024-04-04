@@ -6,8 +6,10 @@ import {
   IsString,
   Max,
   Min,
+  Validate,
   ValidateIf,
 } from 'class-validator';
+import { CustomUtcDateValidator } from 'src/helpers/CustomUtcDateFormatValidator';
 
 export class CreateTaskDto {
   @IsString()
@@ -19,6 +21,7 @@ export class CreateTaskDto {
   status?: number;
 
   @IsDateString({ strict: true })
+  @Validate(CustomUtcDateValidator)
   @IsOptional()
   due_date?: string;
 

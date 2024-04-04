@@ -4,8 +4,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Validate,
   ValidateIf,
 } from 'class-validator';
+import { CustomUtcDateValidator } from 'src/helpers/CustomUtcDateFormatValidator';
 
 export class UpdateTaskDto {
   @IsString()
@@ -18,6 +20,7 @@ export class UpdateTaskDto {
   status?: number;
 
   @IsDateString({ strict: true })
+  @Validate(CustomUtcDateValidator)
   @IsOptional()
   due_date?: string;
 
