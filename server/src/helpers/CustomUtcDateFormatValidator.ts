@@ -2,6 +2,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import * as moment from 'moment';
 
 @ValidatorConstraint({ name: 'customUtcDate', async: true })
 export class CustomUtcDateValidator implements ValidatorConstraintInterface {
@@ -15,19 +16,14 @@ export class CustomUtcDateValidator implements ValidatorConstraintInterface {
       return false;
     }
 
-    try {
-      const dateParsed = new Date(Date.parse(value));
-      if (dateParsed.toISOString() == value) {
-        return false;
-      }
-    } catch {
-      return false;
-    }
+    // Check for time format
+    const timeFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+    const isValid = moment(value, timeFormat, true).isValid();
 
-    return true; // Validation passed
+    return isValid;
   }
 
   defaultMessage() {
-    return "Invalid UTC date format. Expecting the following formats: ['YYYY-MM-DDThh:mm:ss.sssZ', 'YYYY-MM-DDThh:mm:ssZ']";
+    return "Invalid UTC date format. Expecting the following format: 'YYYY-MM-DDTHH:mm:ssZ'";
   }
 }
