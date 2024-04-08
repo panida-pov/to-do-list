@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
   IsNotEmpty,
@@ -12,23 +13,45 @@ import {
 import { CustomUtcDateValidator } from 'src/helpers/CustomUtcDateFormatValidator';
 
 export class CreateTaskDto {
+  @ApiProperty({
+    description: 'Task name',
+    example: 'Do laundry',
+  })
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @ApiPropertyOptional({
+    description: 'Task status (0: incomplete, 1: complete)',
+    default: 0,
+  })
   @IsNumber()
   @ValidateIf((object, value) => value !== undefined)
   status?: number;
 
+  @ApiPropertyOptional({
+    description: 'Task due date in ISO8601 format (UTC time)',
+    example: '2024-04-08T18:00:00Z',
+    default: null,
+  })
   @IsDateString({ strict: true })
   @Validate(CustomUtcDateValidator)
   @IsOptional()
   due_date?: string;
 
+  @ApiPropertyOptional({
+    description: 'Category id to which task belongs',
+    example: 1,
+    default: null,
+  })
   @IsNumber()
   @IsOptional()
   category_id?: number;
 
+  @ApiPropertyOptional({
+    description: 'Task priority level (1: low, 2: medium, 3: high)',
+    default: 1,
+  })
   @IsNumber()
   @Min(1)
   @Max(3)
