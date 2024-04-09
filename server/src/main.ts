@@ -7,9 +7,8 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('To-Do List API')
-    .setDescription('To-Do List API description')
+    .setDescription('This is the description of how to use To-Do List API')
     .setVersion('1.0')
-    .addTag('to-do-list')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
