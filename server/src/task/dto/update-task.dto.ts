@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -13,6 +14,7 @@ import { CustomUtcDateValidator } from 'src/helpers/CustomUtcDateFormatValidator
 export class UpdateTaskDto {
   @ApiPropertyOptional({
     description: 'New task name',
+    example: 'Do dishes',
   })
   @IsString()
   @IsNotEmpty()
@@ -21,8 +23,10 @@ export class UpdateTaskDto {
 
   @ApiPropertyOptional({
     description: 'New task status (0: incomplete, 1: complete)',
+    example: 1,
   })
   @IsNumber()
+  @IsIn([0, 1])
   @ValidateIf((object, value) => value !== undefined)
   status?: number;
 
@@ -35,9 +39,7 @@ export class UpdateTaskDto {
   @IsOptional()
   due_date?: string;
 
-  @ApiPropertyOptional({
-    description: 'New category id to which task belongs',
-  })
+  @ApiPropertyOptional({ description: 'New category id to which task belongs' })
   @IsNumber()
   @IsOptional()
   category_id?: number;
@@ -46,6 +48,7 @@ export class UpdateTaskDto {
     description: 'New task priority level (1: low, 2: medium, 3: high)',
   })
   @IsNumber()
+  @IsIn([1, 2, 3])
   @ValidateIf((object, value) => value !== undefined)
   priority?: number;
 }
