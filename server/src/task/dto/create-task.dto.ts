@@ -1,12 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  Max,
-  Min,
   Validate,
   ValidateIf,
 } from 'class-validator';
@@ -26,6 +25,7 @@ export class CreateTaskDto {
     default: 0,
   })
   @IsNumber()
+  @IsIn([0, 1])
   @ValidateIf((object, value) => value !== undefined)
   status?: number;
 
@@ -53,8 +53,7 @@ export class CreateTaskDto {
     default: 1,
   })
   @IsNumber()
-  @Min(1)
-  @Max(3)
+  @IsIn([1, 2, 3])
   @ValidateIf((object, value) => value !== undefined)
   priority?: number; // 1:LOW, 2:MEDIUM, 3:HIGH
 }
