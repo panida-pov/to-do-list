@@ -9,7 +9,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=todo
-      - TZ=Asia/Tokyo
+      - TZ=UTC
   to-do-server:
     image: to-do-server
     build:
@@ -23,4 +23,4 @@ services:
     volumes:
       - ./server:/server
     environment:
-      - TZ=Asia/Tokyo
+      - TZ=UTC
