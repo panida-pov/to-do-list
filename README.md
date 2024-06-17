@@ -1,5 +1,5 @@
-# To-Do List Backend
-***To-Do List*** is a simple backend application designed for task management.  
+# To-Do List
+***To-Do List*** is a simple backend service designed for task management.  
 It is built with NestJS, TypeORM, and MySQL.
 
 
