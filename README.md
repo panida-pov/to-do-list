@@ -1,7 +1,9 @@
 # To-Do List Backend
-***To-Do List*** is a simple backend application designed for task management.  
+***To-Do List*** is a simple backend service providing API for task management.  
 It is built with NestJS, TypeORM, and MySQL.
 
+## Live Demo
+https://to-do-service-qkwa.onrender.com/api-docs
 
 # Getting Started
 
@@ -22,52 +24,37 @@ It is built with NestJS, TypeORM, and MySQL.
     $ git clone https://github.com/panida-pov/to-do-list.git
     ```
 
-2. Set up and run
-   #### 2.1 Run server and database on Docker
+2. Set up and run on Docker
       ```bash
       $ make up
       
       # or use `docker-compose` command
       $ docker-compose up -d
       ```
-   #### 2.2 Run server on local and database on Docker
-    * Install dependencies on local machine
-    ```bash
-    $ cd server
-    $ npm install
-    ``` 
-    * Create .env file and add hostname/port for local server
-    ```env
-    # /to-do-list/server/.env
-    HOST=localhost
-    PORT=23306
-    ```
-    * Set up and run database container
-    ```bash
-    $ make up
-    
-    # or use `docker-compose` command
-    $ docker-compose up -d
-    ```
-    * Run local server
-    ```bash
-    $ cd server
-    # watch mode
-    $ npm run start:dev
-    ``` 
+3. Run migrations
+      ```bash
+      $ make migration-run
   
-4. Run migrations on local machine
-    ```bash
-    $ make migration-run
+      # or use `docker-compose` command
+      $ docker-compose exec -it to-do-server npm run migration:run
+      ```
   
-    # or use `docker-compose` command
-    $ docker-compose exec -it to-do-server npm run migration:run
-    ```
+**NOTE:**
+To configure the database connection, create `.env` file and set your own environment variables.
+```bash
+  # ./server/.env
+
+  DB_HOST=
+  DB_PORT=
+  DB_USER=
+  DB_PASSWORD=
+  DB_DBNAME=
+```
+
 
 # API Specification
-See **Swagger UI** below
-* For docker server: http://localhost:20080/api-docs
-* For local server: http://localhost:3000/api-docs
+See **Swagger UI** below <br />
+http://localhost:20080/api-docs
 
 # Contributors
 <a href="https://github.com/panida-pov/to-do-list/graphs/contributors">
