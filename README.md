@@ -1,4 +1,4 @@
-# To-Do List Backend
+# To-Do List API Service
 ***To-Do List*** is a simple backend service which provides API for task management.  
 It is built with NestJS, TypeORM, and MySQL.
 
